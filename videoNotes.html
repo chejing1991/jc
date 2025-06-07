@@ -208,13 +208,9 @@
                     const userName = user.selectedOptions[0].text;
 
 
-                    // if(userId){
-                    //     newText = `${newText}` + '\n全文转载：本内容转载自' + ` ${userName} 创作者，已获得原作者授权， @${userId} 作者`;
-                    // }
-					if(userId){
-					    newText = `${newText}` + `\n已获得作者 @${userId} 授权`;
-					}
-
+                    if(userId){
+                        newText = `${newText}` + '\n全文转载：本内容转载自' + ` ${userName} 创作者，已获得原作者授权， @${userId} 作者`;
+                    }
 
                     if (navigator.clipboard) {
                         const tip = btn.nextElementSibling;
