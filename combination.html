@@ -1,192 +1,199 @@
-
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>组合笔记</title>
-    <style>
-        :root {
-            --primary-red: #FF2442;
-            --button-hover: #FF6074;
-            --bg-light: #FFF5F7;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            font-family: 'Arial', sans-serif;
-        }
-
-        .container {
-            padding: 0 15px 80px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .item {
-            margin: 15px 0;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .item div {
-            color: #333;
-            font-size: 16px;
-        }
-
-        textarea {
-            width: 100%;
-            resize: vertical;
-            margin: 8px 0;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            height: auto;
-            overflow-y: auto;
-            min-height: 100px;
-        }
-
-        button {
-            padding: 8px 16px;
-            background: var(--primary-red);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-right: 10px;
-        }
-
-        button:hover {
-            background: var(--button-hover);
-            transform: translateY(-1px);
-        }
-
-        .user-tag {
-            display: inline-block;
-            padding: 4px 8px;
-            background: #f0f0f0;
-            border-radius: 4px;
-            margin-right: 8px; 
-			margin-bottom: 5px;
-			font-size: 12px;
-            cursor: pointer;
-        }
-
-        .user-tag.active {
-            background: var(--primary-red);
-            color: white;
-        }
-
-        select {
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-			box-sizing: border-box;
-    		width: 100%;
-        }
-		option {
-			box-sizing: border-box;
-    		width: 100%;
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>组合笔记</title>
+	<style>
+		:root {
+			--primary-red: #FF2442;
+			--button-hover: #FF6074;
+			--bg-light: #FFF5F7;
 		}
 
-        .copy-btn {
-            width: 100%;
-            padding: 16px;
-            font-size: 18px;
-            margin-top: 20px;
-            min-height: 50px; /* 增加点击区域高度 */
-        }
+		body {
+			background-color: var(--bg-light);
+			font-family: 'Arial', sans-serif;
+		}
 
-        .toast {
-            position: fixed;
-            top: 80%; /* 移动端底部提示更易见 */
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 18px;
-            background: var(--primary-red);
-            color: white;
-            border-radius: 16px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1000;
-            font-size: 14px; /* 适配小屏幕字体 */
-        }
-        .toast.show {
-            opacity: 1;
-        }
+		.container {
+			padding: 0 15px 80px;
+			max-width: 1200px;
+			margin: 0 auto;
+		}
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 10px 80px;
-            }
-            .item {
-                margin: 10px 0;
-                padding: 10px;
-            }
-        }
-    </style>
+		.item {
+			margin: 15px 0;
+			padding: 15px;
+			border: 1px solid #eee;
+			border-radius: 8px;
+			background: white;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		}
+
+		.item div {
+			color: #333;
+			font-size: 16px;
+		}
+
+		textarea {
+			width: 100%;
+			resize: vertical;
+			margin: 8px 0;
+			padding: 8px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			box-sizing: border-box;
+			height: auto;
+			overflow-y: auto;
+			min-height: 100px;
+		}
+
+		button {
+			padding: 8px 16px;
+			background: var(--primary-red);
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: all 0.2s;
+			margin-right: 10px;
+		}
+
+		button:hover {
+			background: var(--button-hover);
+			transform: translateY(-1px);
+		}
+
+		.user-tag {
+			display: inline-block;
+			padding: 4px 8px;
+			background: #f0f0f0;
+			border-radius: 4px;
+			margin-right: 8px;
+			margin-bottom: 5px;
+			font-size: 12px;
+			cursor: pointer;
+		}
+
+		.user-tag.active {
+			background: var(--primary-red);
+			color: white;
+		}
+
+		select {
+			padding: 6px;
+			border-radius: 4px;
+			border: 1px solid #ddd;
+			box-sizing: border-box;
+			width: 100%;
+		}
+
+		option {
+			box-sizing: border-box;
+			width: 100%;
+		}
+
+		.copy-btn {
+			width: 100%;
+			padding: 16px;
+			font-size: 18px;
+			margin-top: 20px;
+			min-height: 50px;
+			/* 增加点击区域高度 */
+		}
+
+		.toast {
+			position: fixed;
+			top: 80%;
+			/* 移动端底部提示更易见 */
+			left: 50%;
+			transform: translateX(-50%);
+			padding: 12px 18px;
+			background: var(--primary-red);
+			color: white;
+			border-radius: 16px;
+			opacity: 0;
+			transition: opacity 0.3s;
+			z-index: 1000;
+			font-size: 14px;
+			/* 适配小屏幕字体 */
+		}
+
+		.toast.show {
+			opacity: 1;
+		}
+
+		@media (max-width: 768px) {
+			.container {
+				padding: 0 10px 80px;
+			}
+
+			.item {
+				margin: 10px 0;
+				padding: 10px;
+			}
+		}
+	</style>
 </head>
-<body>
-    <div class="container">
-        <h2>组合笔记</h2>
-        <div class="item">
-            <div>标题：</div>
-			<textarea id="title"></textarea>
-            <div class="select-container">
-                <select id="title-select">
-                    <option value="">-- 请选择标题 --</option>
-                </select>
-            </div>
-        </div>
-        <div class="item">
-            <div>文本：</div>
-			<textarea id="context"></textarea>
-            <div class="select-container">
-                <select id="content-select">
-                    <option value="">-- 请选择内容 --</option>
-                </select>
-            </div>
-        </div>
-        <div class="item">
-            <div>话题：</div>
-			<textarea id="topic"></textarea>
-            <div class="select-container">
-                <select id="topic-select">
-                    <option value="">-- 请选择话题 --</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="item" id="user-container">
-            <div style="margin-bottom: 8px;">选择用户：</div>
-        </div>
 
-        <button class="copy-btn" onclick="copyNote()">复制笔记内容</button>
-    </div>
+<body>
+	<div class="container">
+		<h2>组合笔记</h2>
+		<div class="item">
+			<div>标题：</div>
+			<textarea id="title"></textarea>
+			<div class="select-container">
+				<select id="title-select">
+					<option value="">-- 请选择标题 --</option>
+				</select>
+			</div>
+		</div>
+		<div class="item">
+			<div>文本：</div>
+			<textarea id="context"></textarea>
+			<div class="select-container">
+				<select id="content-select">
+					<option value="">-- 请选择内容 --</option>
+				</select>
+			</div>
+		</div>
+		<div class="item">
+			<div>话题：</div>
+			<textarea id="topic"></textarea>
+			<div class="select-container">
+				<select id="topic-select">
+					<option value="">-- 请选择话题 --</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="item" id="user-container">
+			<div style="margin-bottom: 8px;">选择用户：</div>
+		</div>
+
+		<button class="copy-btn" onclick="copyNote()">复制笔记内容</button>
+	</div>
 
 	<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    <script>
+	<script>
 
-        // 模拟数据
-        let mockData = {
-            titles: ["学习笔记", "工作记录", "生活随笔"],
-            contents: ["今天学习了JavaScript...", "项目会议记录...", "周末去公园散步..."],
-            topics: ["编程", "工作", "生活"],
-            users: []
-        };
+		// 模拟数据
+		let mockData = {
+			titles: ["学习笔记", "工作记录", "生活随笔"],
+			contents: ["今天学习了JavaScript...", "项目会议记录...", "周末去公园散步..."],
+			topics: ["编程", "工作", "生活"],
+			users: []
+		};
 
 		const _Url = 'https://eztsskucvcaqpvxhlptl.supabase.co';
 		const _Key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6dHNza3VjdmNhcXB2eGhscHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMDA5NzgsImV4cCI6MjA2MzU3Njk3OH0.DAwJ7Ov33tr6N7kG5LOOCNUX7regvjqqRIXQfljNmH4';
-        let _Supabase = null;
+		let _Supabase = null;
 
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', async function() {
+		// 初始化页面
+		document.addEventListener('DOMContentLoaded', async function () {
 
 			_Supabase = supabase.createClient(_Url, _Key, {
 				auth: {
@@ -195,175 +202,183 @@
 				}
 			});
 
-			
+
 			await select('title', function (data) {
-				mockData.titles = [...data];		
+				mockData.titles = [...data];
 			});
 
 			await select('content', function (data) {
-				mockData.contents = [...data];		
+				mockData.contents = [...data];
 			});
 
 			await select('topic', function (data) {
-				mockData.topics = [...data];		
+				mockData.topics = [...data];
 			});
 
 
 			initSelectOptions();
-            setupSelectListeners();
+			setupSelectListeners();
 
 
-			select('user', function (data) {	
-				mockData.users = [...data];			
+			select('user', function (data) {
+				mockData.users = [...data];
 				renderUsers();
 			});
-        });
+		});
 
-        // 初始化选择框选项
-        function initSelectOptions() {
-            const titleSelect = document.getElementById('title-select');
-            const contentSelect = document.getElementById('content-select');
-            const topicSelect = document.getElementById('topic-select');
+		// 初始化选择框选项
+		function initSelectOptions() {
+			const titleSelect = document.getElementById('title-select');
+			const contentSelect = document.getElementById('content-select');
+			const topicSelect = document.getElementById('topic-select');
 
-            mockData.titles.forEach((title, index) => {
-                titleSelect.add(new Option(title.text, index));
-            });
+			mockData.titles.forEach((title, index) => {
+				titleSelect.add(new Option(title.text, index));
+			});
 
-            mockData.contents.forEach((content, index) => {
-                contentSelect.add(new Option(`${content.text}`, index));
-            });
+			mockData.contents.forEach((content, index) => {
+				contentSelect.add(new Option(`${content.text}`, index));
+			});
 
-            mockData.topics.forEach((topic, index) => {
-                topicSelect.add(new Option(topic.text, index));
-            });
-        }
+			mockData.topics.forEach((topic, index) => {
+				topicSelect.add(new Option(topic.text, index));
+			});
+		}
 
-        // 设置选择框事件监听
-        function setupSelectListeners() {
-            document.getElementById('title-select').addEventListener('change', function() {
-                const index = this.value;
-                if (index !== "") {
-                    document.getElementById('title').value = mockData.titles[index].text;
-                } else {
-                    document.getElementById('title').value = "";
-                }
-            });
+		// 设置选择框事件监听
+		function setupSelectListeners() {
+			document.getElementById('title-select').addEventListener('change', function () {
+				const index = this.value;
+				if (index !== "") {
+					document.getElementById('title').value = mockData.titles[index].text;
+				} else {
+					document.getElementById('title').value = "";
+				}
+			});
 
-            document.getElementById('content-select').addEventListener('change', function() {
-                const index = this.value;
-                if (index !== "") {
-                    document.getElementById('context').value = mockData.contents[index].text;
-                } else {
-                    document.getElementById('context').value = "";
-                }
-            });
+			document.getElementById('content-select').addEventListener('change', function () {
+				const index = this.value;
+				if (index !== "") {
+					document.getElementById('context').value = mockData.contents[index].text;
+				} else {
+					document.getElementById('context').value = "";
+				}
+			});
 
-            document.getElementById('topic-select').addEventListener('change', function() {
-                const index = this.value;
-                if (index !== "") {
-                    document.getElementById('topic').value = mockData.topics[index].text;
-                } else {
-                    document.getElementById('topic').value = "";
-                }
-            });
-        }
+			document.getElementById('topic-select').addEventListener('change', function () {
+				const index = this.value;
+				if (index !== "") {
+					document.getElementById('topic').value = mockData.topics[index].text;
+				} else {
+					document.getElementById('topic').value = "";
+				}
+			});
+		}
 
-        // 渲染用户标签
-        function renderUsers() {
-            const container = document.getElementById('user-container');
-            mockData.users.forEach(user => {
-                const span = document.createElement('span');
-                span.className = 'user-tag';
-                span.textContent = user.text;
-                span.onclick = function() {
-                    // 移除所有用户标签的active类
-                    document.querySelectorAll('.user-tag').forEach(tag => tag.classList.remove('active'));
-                    // 添加当前标签的active类
-                    this.classList.add('active');
-                };
-                container.appendChild(span);
-            });
-        }
+		// 渲染用户标签
+		function renderUsers() {
+			const container = document.getElementById('user-container');
+			mockData.users.forEach(user => {
+				const span = document.createElement('span');
+				span.className = 'user-tag';
+				span.textContent = user.text;
+				span.onclick = function () {
+					// 移除所有用户标签的active类
+					document.querySelectorAll('.user-tag').forEach(tag => tag.classList.remove('active'));
+					// 添加当前标签的active类
+					this.classList.add('active');
+				};
+				container.appendChild(span);
+			});
+		}
 
-        // 复制笔记内容
-        function getSelectedUser() {
-            const activeTags = document.querySelectorAll('.user-tag.active');
-            return activeTags.length > 0 ? activeTags[0].textContent : '';
-        }
+		// 复制笔记内容
+		function getSelectedUser() {
+			const activeTags = document.querySelectorAll('.user-tag.active');
+			const userName = activeTags.length > 0 ? activeTags[0].textContent : '';
 
-        function copyNote() {
-            const title = document.getElementById('title').value;
-            const context = document.getElementById('context').value;
-            const topic = document.getElementById('topic').value;
-            const selectedUser = getSelectedUser();
-            let combinedNote = '';
+			const user = mockData.users.find(user => {
+				if (user.text === userName) {
+					return user.text;
+				}
+			});
+			return user
+		}
 
-            if(!title && !context && !topic && !selectedUser) {
-                showToast('请先选择笔记内容或用户');
-                return;
-            }
-            
-            if(title) {
-                combinedNote = `${title}\n`;          
-            }
-			if(context) {
-                combinedNote = `${combinedNote}${context}\n`;              
-            }
-			if(topic) {
-                combinedNote = `${combinedNote}${topic}\n`;    
-            }
-            if(selectedUser) {
-                combinedNote = `${combinedNote}此视频部分素材由 @${selectedUser} 共同创作；`;    
-            }
+		function copyNote() {
+			const title = document.getElementById('title').value;
+			const context = document.getElementById('context').value;
+			const topic = document.getElementById('topic').value;
+			const selectedUser = getSelectedUser();
+			let combinedNote = '';
 
-            // 移动端兼容：优先使用clipboard API，失败则用textarea方案
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(combinedNote).then(() => {
-                    showToast('笔记内容已复制到剪贴板！');
-                }).catch(() => {
-                    fallbackCopyTextToClipboard(combinedNote);
-                });
-            } else {
-                fallbackCopyTextToClipboard(combinedNote);
-            }
-        }
+			if (!title && !context && !topic && !selectedUser) {
+				showToast('请先选择笔记内容或用户');
+				return;
+			}
 
-        function fallbackCopyTextToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                const successful = document.execCommand('copy');
-                const msg = successful ? '复制成功' : '复制失败';
-                showToast(msg);
-            } catch (err) {
-                showToast('复制失败，请手动复制内容');
-            }
-            document.body.removeChild(textarea);
-        }
+			if (title) {
+				combinedNote = `${title}\n`;
+			}
+			if (context) {
+				combinedNote = `${combinedNote}${context}\n`;
+			}
+			if (topic) {
+				combinedNote = `${combinedNote}${topic}\n`;
+			}
+			if (selectedUser) {
+				combinedNote = `${combinedNote}此视频部分素材由 @${selectedUser.xhs} 共同创作；`;
+			}
 
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            // 触发重绘以应用初始样式
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300); // 等待过渡完成后移除
-            }, 2000);
-        }
+			// 移动端兼容：优先使用clipboard API，失败则用textarea方案
+			if (navigator.clipboard) {
+				navigator.clipboard.writeText(combinedNote).then(() => {
+					showToast('笔记内容已复制到剪贴板！');
+				}).catch(() => {
+					fallbackCopyTextToClipboard(combinedNote);
+				});
+			} else {
+				fallbackCopyTextToClipboard(combinedNote);
+			}
+		}
 
-		async function select(table, fun){
-			const {data} = await _Supabase.from(table).select('*');
+		function fallbackCopyTextToClipboard(text) {
+			const textarea = document.createElement('textarea');
+			textarea.value = text;
+			textarea.style.position = 'fixed';
+			textarea.style.opacity = '0';
+			document.body.appendChild(textarea);
+			textarea.select();
+			try {
+				const successful = document.execCommand('copy');
+				const msg = successful ? '复制成功' : '复制失败';
+				showToast(msg);
+			} catch (err) {
+				showToast('复制失败，请手动复制内容');
+			}
+			document.body.removeChild(textarea);
+		}
+
+		function showToast(message) {
+			const toast = document.createElement('div');
+			toast.className = 'toast';
+			toast.textContent = message;
+			document.body.appendChild(toast);
+			// 触发重绘以应用初始样式
+			setTimeout(() => toast.classList.add('show'), 10);
+			setTimeout(() => {
+				toast.classList.remove('show');
+				setTimeout(() => toast.remove(), 300); // 等待过渡完成后移除
+			}, 2000);
+		}
+
+		async function select(table, fun) {
+			const { data } = await _Supabase.from(table).select('*');
 			fun(data);
 		}
 
 
-    </script>
+	</script>
 </body>
+
 </html>
