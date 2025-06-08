@@ -227,12 +227,9 @@
                     const userName = user.selectedOptions[0].text;
 
 
-                    // if(userId){
-                    //     newText = `${newText}` + '\n全文转载：本内容转载自' + ` ${userName} 创作者，已获得原作者授权， @${userId} 作者`;
-                    // }
-					if(userId){
-					    newText = `${newText}` + `\n已获得 @${userId} 授权作者`;
-					}
+		if(userId){
+		    newText = `${newText}` + `\n此视频部分素材由 @${userId} 共同创作;`;
+		}
 
 
                     if (navigator.clipboard) {
