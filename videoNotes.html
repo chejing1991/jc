@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小红书文本</title>
+    <title>视频文本</title>
 
     <style>
         :root {
@@ -129,13 +129,9 @@
 
         let _Supabase = null;
         let _Data = [];
-        let _Users = [
-            { name: '选择授权用户', xhsId: '' },
-            { name: 'Addie', xhsId: '42683829832' },
-            { name: 'Mateo', xhsId: '95621369560' },
-            { name: '阿燕上妆', xhsId: '阿燕上妆' },
-            { name: 'Serene', xhsId: '94123040311' }
-        ];
+        let _Users = [{
+            name: '请选择', xhsId: ''
+        }];
         let _Product = [];
         let _Url = 'https://eztsskucvcaqpvxhlptl.supabase.co';
         let _Key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6dHNza3VjdmNhcXB2eGhscHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMDA5NzgsImV4cCI6MjA2MzU3Njk3OH0.DAwJ7Ov33tr6N7kG5LOOCNUX7regvjqqRIXQfljNmH4';
@@ -147,6 +143,14 @@
                     persistSession: false
                 }
             });
+
+
+            const users = await _Supabase.from('user').select("*");
+            if (users.data.length > 0) {
+                users.data.forEach(item => {
+                    _Users.push({ name: item.text, xhsId: item.xhs });
+                });
+            }
 
 
             const product = await _Supabase.from('product').select("*");
@@ -227,7 +231,7 @@
                     //     newText = `${newText}` + '\n全文转载：本内容转载自' + ` ${userName} 创作者，已获得原作者授权， @${userId} 作者`;
                     // }
 					if(userId){
-					    newText = `${newText}` + `\n此视频部分素材由 @${userId} 共同创作；`;
+					    newText = `${newText}` + `\n已获得 @${userId} 授权作者`;
 					}
 
 
