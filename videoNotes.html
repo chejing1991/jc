@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>视频笔记文本</title>
+    <title>小红书文本</title>
 
     <style>
         :root {
@@ -148,11 +148,26 @@
                 }
             });
 
+
+            const product = await _Supabase.from('product').select("*");
+            if (product.data.length > 0) {
+                product.data.forEach(item => {
+                    _Product.push(item.text);
+                });
+            }
+
+
             try {
                 const { data } = await _Supabase.from('videoText').select("*");
                 _Data = data;
                 _Data.forEach(item => {
-                    _Product.push(item.typeName);
+
+                    const _Product_item = product.data.forEach(_item => {
+                        if ( _item.type == item.type) {
+                            item.typeName = _item.text;
+                        }
+                    })                  
+                   
                 });
                 renderNotes();
                 renderFilters();
@@ -208,9 +223,13 @@
                     const userName = user.selectedOptions[0].text;
 
 
-                    if(userId){
-                        newText = `${newText}` + '\n全文转载：本内容转载自' + ` ${userName} 创作者，已获得原作者授权， @${userId} 作者`;
-                    }
+                    // if(userId){
+                    //     newText = `${newText}` + '\n全文转载：本内容转载自' + ` ${userName} 创作者，已获得原作者授权， @${userId} 作者`;
+                    // }
+					if(userId){
+					    newText = `${newText}` + `\n此视频部分素材由 @${userId} 共同创作；`;
+					}
+
 
                     if (navigator.clipboard) {
                         const tip = btn.nextElementSibling;
