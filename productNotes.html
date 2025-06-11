@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <style>
+        :root {
+            --primary-red: #FF2442;
+            --button-hover: #FF6074;
+            --bg-light: #FFF5F7;
+        }
+
+        .container {
+            padding: 0 15px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            background-color: var(--bg-light);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .note-item {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .note-textarea {
+            width: 100%;
+            resize: vertical;
+            margin: 8px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .note-title {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--button-hover);
+            transform: translateY(-1px);
+        }
+
+        .copy-tip {
+            margin-left: 10px;
+            color: var(--primary-red);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .filter-select {
+            padding: 6px 12px;
+            margin-left: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px 80px;
+            }
+            .note-item {
+                margin: 10px 0;
+                padding: 10px;
+            }
+            .footer {
+                padding: 0 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>文本</h1>
+        <div class="content">
+
+            <div id="notesContainer"></div>
+        </div>
+        <div class="footer">
+            <div class="users">授权：</div>
+        </div>
+        
+        
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <script>
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let _S = urlParams.get('S') || 'P_lipPencil';
+        let _T = urlParams.get('T') || '唇线笔';
+        let _Supabase = null;
+        let _Data = [];
+        let _Users = [{
+            name: '请选择', xhsId: ''
+        }];
+        let _Url = 'https://eztsskucvcaqpvxhlptl.supabase.co';
+        let _Key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6dHNza3VjdmNhcXB2eGhscHRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMDA5NzgsImV4cCI6MjA2MzU3Njk3OH0.DAwJ7Ov33tr6N7kG5LOOCNUX7regvjqqRIXQfljNmH4';
+
+        window.onload = async function () {
+            _Supabase = supabase.createClient(_Url, _Key, {
+                auth: {
+                    localStorageSameSite: 'lax',
+                    persistSession: false
+                }
+            });
+
+            const users = await _Supabase.from('user').select("*");
+            if (users.data.length > 0) {
+                users.data.forEach(item => {
+                    _Users.push({ name: item.text, xhsId: item.xhs });
+                });
+            }
+
+
+            try {
+                const { data } = await _Supabase.from(_S).select("*");
+                _Data = data;
+
+                renderNotes();
+                renderFilters();
+
+            // 更新H1标签和title
+            const h1 = document.querySelector('h1');
+            if (h1) {
+                h1.textContent = _T + ' ' + h1.textContent;
+            }
+            document.title = _T;
+               
+            } catch (err) {
+                console.error('数据库查询失败:', err);
+                alert('加载数据失败，请稍后再试！');
+            }
+        }
+
+
+        function renderNotes(data = _Data) {
+            const container = document.getElementById('notesContainer');
+            container.innerHTML = '';
+
+            data.forEach(note => {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note-item';
+                const lines = note.text.split('\n');
+                const title = lines[0] || '';
+                const content = lines.slice(1).join('\n');
+                noteDiv.innerHTML = `
+                    <h3 class="note-title">${title}</h3>
+                    <textarea class="note-textarea">${note.text}</textarea>
+                    <button class="copy-btn">复制</button><span class="copy-tip"></span>
+                `;
+                container.appendChild(noteDiv);
+
+                // 自动调整textarea高度
+                const textarea = noteDiv.querySelector('.note-textarea');
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = `${this.scrollHeight + 5}px`;
+                });
+                // 初始加载时调整高度
+                textarea.dispatchEvent(new Event('input'));
+            });
+
+            // 绑定复制按钮事件
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const textarea = btn.previousElementSibling;
+                    let newText = textarea.value;
+
+                    const user = document.querySelector('.users .filter-select');
+                    const userId = user.value;
+                    const userName = user.selectedOptions[0].text;
+
+
+                    // if(userId){
+                    //     newText = `${newText}` + '\n全文转载：本内容转载自' + ` ${userName} 创作者，已获得原作者授权， @${userId} 作者`;
+                    // }
+					if(userId){
+					    newText = `${newText}` + `\n此视频部分素材由 @${userId} 共同创作;`;
+					}
+
+
+                    if (navigator.clipboard) {
+                        const tip = btn.nextElementSibling;
+                        navigator.clipboard.writeText(newText)
+                            .then(() => {
+                                tip.textContent = '已复制到剪贴板';
+                                tip.style.opacity = '1';
+                                setTimeout(() => tip.style.opacity = '0', 1500);
+                            })
+                            .catch(() => fallbackCopyTextToClipboard(newText));
+                    } else {
+                        fallbackCopyTextToClipboard(newText);
+                    }
+                });
+            });
+
+            // 备用复制方法
+            function fallbackCopyTextToClipboard(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed'; // 避免滚动到底部
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    const msg = successful ? '已复制到剪贴板' : '复制失败';
+                    const tip = btn.nextElementSibling;
+                    tip.textContent = msg;
+                    tip.style.opacity = '1';
+                    setTimeout(() => tip.style.opacity = '0', 1500);
+                } catch (err) {
+                    alert('复制失败');
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        function renderFilters() {
+            
+            // 渲染用户选择
+            const userDiv = document.querySelector('.users');
+            const userSelect = document.createElement('select');
+            userSelect.className = 'filter-select';
+            const uniqueUsers = [...new Set(_Users)];
+            uniqueUsers.forEach(userId => {
+                userSelect.innerHTML += `<option value="${userId.xhsId}">${userId.name}</option>`;
+            });
+            userDiv.appendChild(userSelect);
+        }
+
+    </script>
+
+</body>
+
+</html>
