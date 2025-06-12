@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>话题处理工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .container {
+            min-width: 300px;
+            padding: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: vertical;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-top: 8px;
+        }
+        textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+        .topic-list {
+            margin: 10px 0;
+            overflow: visible;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .topic-item {
+            padding: 8px 12px;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+        }
+        input[type="checkbox" i] {
+            margin: 0 5px;
+        }
+        .topic-item:hover {
+            background-color: #f8f9fa;
+        }
+        .topic-item input:checked + label {
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button {
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #45a049;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button:active {
+            background-color: #3d8b40;
+            transform: translateY(1px);
+        }
+        .copy-tip {
+            position: relative;
+            margin-left: 10px;
+            padding: 4px 8px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            vertical-align: middle;
+            animation: fade 2s ease-in-out;
+        }
+        @keyframes fade {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .topic-item {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            textarea {
+                height: 100px;
+                font-size: 12px;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="margin-top: 8px;">话题处理工具</h2>
+        <div class="input-group">
+            <label>原始文本输入：</label>
+            <textarea id="inputText" placeholder="输入需要处理的文本（关键词用逗号/空格分隔）"></textarea>
+        </div>
+       
+        <div class="topic-list" id="topicList"></div>
+        <div style="margin: 10px 0px; font-size: 13px;">已选择：<span id="topic-lenght">0</span> 个话题</div>
+        <button id="generateBtn">生成复制文本</button>
+        <div class="input-group">
+            <textarea id="outputText" readonly></textarea>
+        </div>
+    </div>
+    <script>
+
+          // 新增话题处理逻辑
+            const inputText = document.getElementById('inputText');
+            const topicList = document.getElementById('topicList');
+            const generateBtn = document.getElementById('generateBtn');
+            let selectedTopics = [];
+
+
+            // 分割话题按钮点击事件
+            document.getElementById('inputText').addEventListener('input', () => {
+                const text = inputText.value.trim().replace(/\s+/g, ''); // 去除所有空格
+                // 使用#分割关键词并过滤空值，保留所有话题
+                const topics = [...new Set(text.split(/[#]+/).filter(t => t))];
+                // 渲染前50个话题勾选列表
+                topicList.innerHTML = topics.map((topic, index) => `
+                <div class="topic-item">
+                    ${index+1}
+                    <input type="checkbox" id="topic-${index}" data-topic="${topic}" ${index < 50 ? 'checked' : ''}>
+                    <label for="topic-${index}">${topic}</label>
+                </div>
+                `).join('');
+                // 初始化选中话题为前50个
+                selectedTopics = topics.slice(0, 50);
+                document.getElementById('topic-lenght').innerText = selectedTopics.length || "0"
+
+                // 监听勾选状态变化
+                topicList.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const topic = e.target.dataset.topic;
+                    if (e.target.checked) {
+                    selectedTopics.push(topic);
+                    } else {
+                    selectedTopics = selectedTopics.filter(t => t !== topic);
+                    }
+                    document.getElementById('topic-lenght').innerText = selectedTopics.length || "0"
+                });
+                });
+            });
+
+            // 生成新文本按钮点击事件
+            generateBtn.addEventListener('click', async () => {
+                const outputText = document.getElementById('outputText');
+                const textToCopy = '#' + selectedTopics.join('#');
+                outputText.value = textToCopy;
+                
+                try {
+                    await navigator.clipboard.writeText(textToCopy);
+                    showCopyTip('复制成功');
+                } catch (err) {
+                    showCopyTip('复制失败');
+                }
+            });
+            
+            function showCopyTip(message) {
+                const tip = document.createElement('span');
+                tip.className = 'copy-tip';
+                tip.textContent = message;
+                generateBtn.insertAdjacentElement('afterend', tip);
+                setTimeout(() => tip.remove(), 2000);
+            }
+
+            // 表格转换为数组函数
+            function convertTableToArray() {
+                const table = document.getElementById('dataTable');
+                const result = [];
+                
+                // 获取表头
+                const headers = Array.from(table.tHead.rows[0].cells).map(cell => cell.textContent);
+                
+                // 遍历表格主体
+                table.tBodies[0].rows.forEach(row => {
+                    const rowData = {};
+                    Array.from(row.cells).forEach((cell, index) => {
+                        rowData[headers[index]] = cell.textContent;
+                    });
+                    result.push(rowData);
+                });
+                
+                return result;
+            }
+    </script>
+</body>
+</html>
